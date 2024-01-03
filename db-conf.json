@@ -1,0 +1,9 @@
+{
+  "pg_conf": {
+    "host": "localhost",
+    "port": 5432,
+    "db": "american_royalty",
+    "user": "postgres",
+    "pass": "postgres"
+  }
+}
