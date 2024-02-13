@@ -2,9 +2,9 @@ import User from "../models/User.js";
 
 const UserController = () => {}
 
-UserController.getAll = async (request, response, next) => {
+UserController.getAll = async (request, response) => {
     try {
-        const options = request.body
+        const options = request.query
         const users = await User.getAll(options)
 
         response.status(200)

@@ -3,7 +3,7 @@ import UserController from "../controllers/user-controller.js";
 
 const router = express.Router();
 
-router.post('/', UserController.getAll);
+router.get('/list', UserController.getAll);
 router.delete('/delete/:ids', UserController.delete);
 router.get('/totals', UserController.totals);
 router.get('/waiter', UserController.waiter);

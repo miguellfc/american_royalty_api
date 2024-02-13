@@ -14,7 +14,12 @@ User.login = async (email) => {
     return await cnx.query(query)
 }
 
-User.getAll = async ({start, limit, role}) => {
+User.getAll = async (data) => {
+    const role = data.role;
+    const page = parseInt(data.page) || 1;
+    const limit = parseInt(data.limit) || 10;
+
+    const start = (page - 1) * limit;
 
     const query = `SELECT u.id_usuario, u.email,
                                 u.nombre, u.apellido,
@@ -29,7 +34,7 @@ User.getAll = async ({start, limit, role}) => {
 
     const result = await cnx.query(query);
 
-    const count = await all();
+    const count = await all(role);
 
     return {
         data: result.rows,
@@ -163,9 +168,10 @@ User.sellers = async () => {
     return result.rows;
 }
 
-const all = async () => {
+const all = async (role) => {
     const query = `SELECT count(id_usuario)
-                            FROM public.usuario`;
+                            FROM public.usuario
+                            ${role ? `WHERE id_rol = ${role}` : ''}`;
 
     return await cnx.query(query);
 }
