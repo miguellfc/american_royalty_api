@@ -14,12 +14,33 @@ User.login = async (email) => {
     return await cnx.query(query)
 }
 
-User.getAll = async (data) => {
-    const role = data.role;
-    const page = parseInt(data.page) || 1;
-    const limit = parseInt(data.limit) || 10;
+User.getAll = async (options) => {
+    const search = options.search;
+    const role = parseInt(options.role);
+    const page = parseInt(options.page) || 1;
+    const limit = parseInt(options.limit) || 10;
 
     const start = (page - 1) * limit;
+
+    const wSearch = [`u.email LIKE '%${search}%'`, `u.nombre LIKE '%${search}%'`, `u.apellido LIKE '%${search}%'`, `u.usuario LIKE '%${search}%'`];
+    const wRole = `u.id_rol = '${role}'`;
+
+    const wArray = [];
+
+    if (search !== '') {
+        wArray.push(`(${wSearch.join(' OR ')})`)
+    }
+
+    if (role !== -1){
+        wArray.push(wRole);
+    }
+
+    let where = '';
+    if (wArray.length === 1) {
+        where = `WHERE ${wArray[0]}`;
+    } else if (wArray.length === 2) {
+        where = `WHERE ${wArray.join(' AND ')}`;
+    }
 
     const query = `SELECT u.id_usuario, u.email,
                                 u.nombre, u.apellido,
@@ -27,14 +48,14 @@ User.getAll = async (data) => {
                                 u.id_rol, r.nombre_rol AS rol
                             FROM public.usuario u
                             LEFT JOIN public.rol_system r ON (u.id_rol = r.id_rol)
-                            ${ role ? `WHERE u.id_rol = '${role}'` : ''}
+                            ${ where }
                             ORDER BY nombre, apellido ASC
                             ${start ? `OFFSET ${start}` : ``}
                             ${limit ? `LIMIT ${limit}` : ``}`;
 
     const result = await cnx.query(query);
 
-    const count = await all(role);
+    const count = await all( where );
 
     return {
         data: result.rows,
@@ -168,13 +189,14 @@ User.sellers = async () => {
     return result.rows;
 }
 
-const all = async (role) => {
+const all = async (where) => {
     const query = `SELECT count(id_usuario)
-                            FROM public.usuario
-                            ${role ? `WHERE id_rol = ${role}` : ''}`;
+                            FROM public.usuario u
+                            ${ where }`;
 
     return await cnx.query(query);
 }
+
 const validateTelf = async (id, telf) => {
     const query = `SELECT telefono
                             FROM public.usuario
@@ -184,6 +206,7 @@ const validateTelf = async (id, telf) => {
 
     return usuario.rows[0].telefono === telf;
 }
+
 const validateUser = async (id, user) => {
     const query = `SELECT usuario
                             FROM public.usuario
@@ -193,6 +216,7 @@ const validateUser = async (id, user) => {
 
     return usuario.rows[0].usuario === user;
 }
+
 const validatePass = async (id, pass) => {
     const query = `SELECT password
                             FROM public.usuario
@@ -202,6 +226,7 @@ const validatePass = async (id, pass) => {
 
     return usuario.rows[0].password === pass
 }
+
 const validateEmail = async (id, email) => {
     const query = `SELECT email
                             FROM public.usuario
@@ -211,9 +236,11 @@ const validateEmail = async (id, email) => {
 
     return usuario.rows[0].email === email
 }
+
 const validatePhoto = async (id, foto) => {
     return await getPhotos(id) === foto;
 }
+
 const getPhotos = async (id) => {
     const query = `SELECT foto
                             FROM public.usuario
@@ -223,4 +250,5 @@ const getPhotos = async (id) => {
 
     return usuario.rows;
 }
+
 export default User
