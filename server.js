@@ -41,7 +41,7 @@ const upload = multer({storage});
 
 // Routes with files
 app.post("/user/create", verifyToken, upload.single('foto'), UserController.create);
-app.patch("/user/update/:id", upload.single('foto'), UserController.update);
+app.put("/user/update/:id", upload.single('foto'), UserController.update);
 
 //Routes
 app.use("/auth", loginRoute);
@@ -56,7 +56,7 @@ const PORT = process.env.PORT || 3030;
 cnx.connect()
     .then(() => {
         app.listen(PORT,() => console.log(`Server is running at port: ${PORT}`))
-        console.log("Connected to POSTGRES")
+        console.log("Connected to POSTGRES");
     })
     .catch((error) => console.log("Error to connect to POSTGRES"))
 

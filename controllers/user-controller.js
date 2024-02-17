@@ -18,14 +18,12 @@ UserController.getAll = async (request, response) => {
     }
 }
 
-UserController.create = async (request, response, next) => {
+UserController.create = async (request, response) => {
     try {
         const new_user = request.body
-
         const result = await User.create(new_user)
 
-        response.status(200)
-            .json(result)
+        response.status(200).json(result)
 
     } catch (error) {
         response.status(404)
@@ -35,7 +33,7 @@ UserController.create = async (request, response, next) => {
     }
 }
 
-UserController.update = async (request, response, next) => {
+UserController.update = async (request, response) => {
     try {
         const new_user = request.body
 
@@ -52,7 +50,7 @@ UserController.update = async (request, response, next) => {
     }
 }
 
-UserController.delete = async (request, response, next) => {
+UserController.delete = async (request, response) => {
     try {
         const { ids } = request.params
         const result = await User.delete( ids )
@@ -68,7 +66,7 @@ UserController.delete = async (request, response, next) => {
     }
 }
 
-UserController.totals = async (request, response, next) => {
+UserController.totals = async (request, response) => {
     try {
         const result = await User.totals();
 
@@ -83,7 +81,7 @@ UserController.totals = async (request, response, next) => {
     }
 }
 
-UserController.waiter = async (request, response, next) => {
+UserController.waiter = async (request, response) => {
     try {
         const result = await User.waiter();
 
@@ -98,7 +96,7 @@ UserController.waiter = async (request, response, next) => {
     }
 }
 
-UserController.finisher = async (request, response, next) => {
+UserController.finisher = async (request, response) => {
     try {
         const result = await User.finisher();
 
@@ -113,7 +111,7 @@ UserController.finisher = async (request, response, next) => {
     }
 }
 
-UserController.sellers = async (request, response, next) => {
+UserController.sellers = async (request, response) => {
     try {
         const result = await User.sellers();
 

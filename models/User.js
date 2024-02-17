@@ -45,8 +45,8 @@ User.getAll = async (data) => {
 User.create = async (new_user) => {
     const {email, nombre, apellido, fotoPath, password, telefono, usuario, id_rol} = new_user
 
-    const salt = await bcrypt.genSalt()
-    const passwordHash = await bcrypt.hash(password, salt)
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
 
     const query = `INSERT INTO public.usuario (email, nombre, apellido, foto, password, telefono, usuario, id_rol)
                           VALUES ('${email}', '${nombre}', '${apellido}', '${fotoPath}', '${passwordHash}', '${telefono}', '${usuario}', '${id_rol}')`
