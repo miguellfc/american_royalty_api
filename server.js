@@ -1,16 +1,15 @@
 import express from "express";
+import * as path from "node:path";
 import bodyParser from "body-parser";
-import pg from "pg";
 import cors from "cors";
 import multer from "multer";
 import helmet from "helmet";
 import morgan from "morgan"
-import * as path from "path";
-import { fileURLToPath } from "url";
-import { loginRoute, userRoutes, serviceRoutes, typeserviceRoutes, roleRoutes, requestRoutes } from "./routes/routes.js"
-import { cnx } from "./pg_connection.js";
 import UserController from "./controllers/user-controller.js";
-import {verifyToken} from "./middleware/auth-mdw.js";
+import { cnx } from "./pg_connection.js";
+import { fileURLToPath } from "node:url";
+import { verifyToken } from "./middleware/auth-mdw.js";
+import { loginRoute, userRoutes, serviceRoutes, typeserviceRoutes, roleRoutes, requestRoutes } from "./routes/routes.js"
 
 //Config Middleware
 const __filename = fileURLToPath(import.meta.url);
@@ -23,8 +22,8 @@ app.use(helmet.crossOriginResourcePolicy({
     policy: 'cross-origin'
 }));
 app.use(morgan("common"));
-app.use(bodyParser.json({limit: '30mb', extended: true}));
-app.use(bodyParser.urlencoded({limit: '30mb', extended: true}));
+app.use(bodyParser.json({ limit: '30mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 
@@ -41,7 +40,7 @@ const upload = multer({storage});
 
 // Routes with files
 app.post("/user/create", verifyToken, upload.single('foto'), UserController.create);
-app.put("/user/update/:id", upload.single('foto'), UserController.update);
+app.patch("/user/update/:id", upload.single('foto'), UserController.update);
 
 //Routes
 app.use("/auth", loginRoute);
